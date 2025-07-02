@@ -1,17 +1,19 @@
 -- premake5.lua
-workspace "New Project"
+workspace "Kiwi"
    architecture "x64"
    configurations { "Debug", "Release", "Dist" }
-   startproject "App"
+   startproject "Sandbox"
 
-   -- Workspace-wide build options for MSVC
    filter "system:windows"
+      systemversion "latest"
       buildoptions { "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" }
+      defines { "WINDOWS" }
+   filter {}
 
 OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
 group "Core"
-	include "Core/Build-Core.lua"
+   include "Kiwi-Core/Build-KiwiCore.lua"
 group ""
 
-include "App/Build-App.lua"
+include "Sandbox/Build-Sandbox.lua"

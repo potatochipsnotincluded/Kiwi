@@ -10,5 +10,48 @@ Binaries/
 *.log
 Makefile
 
+# Codelite
+*.project
+*.workspace
+*.session
+*.tags
+*.layout
+*.layout2
+.clg
+.codelite
+
+# === Build Output ===
+Binaries/
+build/
+Build/
+out/
+bin/
+obj/
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+
+# === Make ===
+Makefile
+*.d         # Dependency files
+*.dep
+*.map
+
+# === Logs and temp ===
+*.log
+*.tmp
+
+# === OS and editor junk ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
 # Exclude
 !Vendor/Binaries
