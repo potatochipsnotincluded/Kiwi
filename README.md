@@ -1,5 +1,5 @@
 # Kiwi Engine
-This is a free and open source game engine to create complex 3D and 2D games. It uses NVRHI and GLFW.
+This is a free and open source game engine to create complex 3D and 2D games. It uses Vulkan and GLFW.
 
 ## Development
 To clone the Git Repository, please run the command `git clone --recursive https://github.com/potatochipsnotincluded/Kiwi.git`.
