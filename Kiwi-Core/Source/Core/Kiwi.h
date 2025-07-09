@@ -7,5 +7,3 @@
 
 #include "Common.h"
 #include "Debug.h"
-#include "Window.h"
-#include "Renderer.h"

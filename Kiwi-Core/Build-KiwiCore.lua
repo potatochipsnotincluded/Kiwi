@@ -9,9 +9,7 @@ project "Kiwi-Core"
    includedirs
    {
       "Source",
-      "../Vendor/glfw/include",
-      "../Vendor/Assimp/include",
-      "../Vendor/glm"
+      "../Vendor/Raylib/include"
    }
    
 
@@ -20,13 +18,9 @@ project "Kiwi-Core"
 
    filter "system:windows"
       systemversion "latest"
-	  includedirs { os.getenv("VULKAN_SDK") .. "/Include" }
-	  libdirs     { os.getenv("VULKAN_SDK") .. "/Lib" }
       links
       {
-         "../Vendor/Assimp/assimp-vc143-mt.lib",
-         "../Vendor/glfw/glfw3.lib",
-		  "vulkan-1",
+         "../Vendor/Raylib/raylib.lib",
          "opengl32.lib",
          "shlwapi.lib",
          "user32.lib",

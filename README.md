@@ -1,5 +1,5 @@
 # Kiwi Engine
-This is a free and open source game engine to create complex 3D and 2D games. It uses Vulkan and GLFW.
+This is a free and open source game engine to create complex 3D and 2D games. It is based off Raylib.
 
 ## Development
 To clone the Git Repository, please run the command `git clone --recursive https://github.com/potatochipsnotincluded/Kiwi.git`.
@@ -7,8 +7,7 @@ Once cloned, run the script related to your development environmentment. It will
 To use the Vulkan version, you will be required to install the Vulkan SDK.
 
 ## Libraries
-- GLFW
-- Vulkan
+- Raylib
 - ImGui (TODO)
 - Miniaudio (TODO)
 

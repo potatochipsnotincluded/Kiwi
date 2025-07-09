@@ -12,9 +12,7 @@ project "Sandbox"
 
       -- Include Core
       "../Kiwi-Core/Source",
-      "../Vendor/glfw/include",
-      "../Vendor/Assimp/include",
-      "../Vendor/glm"
+      "../Vendor/Raylib/include"
    }
 
    links { "Kiwi-Core" }
