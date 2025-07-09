@@ -13,7 +13,6 @@ project "Sandbox"
       -- Include Core
       "../Kiwi-Core/Source",
       "../Vendor/glfw/include",
-      "../Vendor/NVRHI/include",
       "../Vendor/Assimp/include",
       "../Vendor/glm"
    }
@@ -24,6 +23,7 @@ project "Sandbox"
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
    filter "system:windows"
+   	  includedirs { os.getenv("VULKAN_SDK") .. "/Include" }
       systemversion "latest"
 
    filter "configurations:Debug"

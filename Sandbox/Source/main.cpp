@@ -1,12 +1,10 @@
-#include <Core/Kiwi.h>
+#include "SandboxApplication.h"
 
-int main(int argc, char* argv[])
+#include <Application/Application.h>
+
+Kiwi::Application* CreateApplication()
 {
-	KW_LOG("Kiwi version " << KIWI_VERSION_MAJOR << "." << KIWI_VERSION_MINOR << " initialising.");
-
-#ifdef EXPERIMENTAL_BUILD
-	KW_LOG("This is an experimental build of Kiwi. It may be unstable.");
-#endif
-	
-	return 0;
+	return new SandboxApplication();
 }
+
+#include <Application/EntryPoint.h>

@@ -10,7 +10,6 @@ project "Kiwi-Core"
    {
       "Source",
       "../Vendor/glfw/include",
-      "../Vendor/NVRHI/include",
       "../Vendor/Assimp/include",
       "../Vendor/glm"
    }
@@ -21,14 +20,13 @@ project "Kiwi-Core"
 
    filter "system:windows"
       systemversion "latest"
+	  includedirs { os.getenv("VULKAN_SDK") .. "/Include" }
+	  libdirs     { os.getenv("VULKAN_SDK") .. "/Lib" }
       links
       {
          "../Vendor/Assimp/assimp-vc143-mt.lib",
          "../Vendor/glfw/glfw3.lib",
-         "../Vendor/NVRHI/nvrhi.lib",
-         "../Vendor/NVRHI/nvrhi_d3d11.lib",
-         "../Vendor/NVRHI/nvrhi_d3d12.lib",
-         "../Vendor/NVRHI/nvrhi_vk.lib",
+		  "vulkan-1",
          "opengl32.lib",
          "shlwapi.lib",
          "user32.lib",
