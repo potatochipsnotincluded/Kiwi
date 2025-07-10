@@ -4,6 +4,8 @@ namespace Kiwi {
 
 	void Window::Initialise(std::string_view title, uint32_t width, uint32_t height)
 	{
+		SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+
 		InitWindow(width, height, title.data());
 	}
 
