@@ -7,3 +7,5 @@
 
 #include "Common.h"
 #include "Debug.h"
+#include "Codes.h"
+#include "Window.h"

@@ -20,7 +20,7 @@ project "Kiwi-Core"
       systemversion "latest"
       links
       {
-         "../Vendor/Raylib/raylib.lib",
+         "../Vendor/Raylib/lib/raylib.lib",
          "opengl32.lib",
          "shlwapi.lib",
          "user32.lib",
