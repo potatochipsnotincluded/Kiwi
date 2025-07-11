@@ -20,6 +20,11 @@ namespace Kiwi {
 	{
 		Texture2D raylibTexture;
 		std::filesystem::path filePath;
+
+		~Image2D()
+		{
+			UnloadTexture(raylibTexture);
+		}
 	};
 
 	struct Material
@@ -29,7 +34,7 @@ namespace Kiwi {
 		
 		Colour diffuseColour;
 
-		Image2D texture;
+		Image2D* texture;
 	};
 
 	struct Mesh
@@ -37,6 +42,11 @@ namespace Kiwi {
 		Model raylibModel;
 
 		Material material;
+
+		inline ~Mesh()
+		{
+			UnloadModel(raylibModel);
+		}
 	};
 
 	inline Transform* g_MainCamera;
@@ -60,27 +70,52 @@ namespace Kiwi {
 		class ShaderManager
 		{
 		public:
-			ShaderManager();
 			~ShaderManager();
 
-			void SetShaderParams(Material material);
+			virtual void SetShaderParams(Material material) = 0;
 
 			Shader GetShader();
 			
-		private:
+		protected:
 			Shader m_Shader;
 		};
 
-		void Clear(Colour colour);
+		class PBRShader : public ShaderManager
+		{
+		public:
+			PBRShader();
 
-		void DrawMesh(Mesh& mesh, Transform transform, ShaderManager* shaderManager);
+			virtual void SetShaderParams(Material material) override;
+		};
 
-		void End3DRender();
+		struct MeshDrawData
+		{
+			Mesh* mesh;
+			Transform transform;
+			ShaderManager* shaderManager;
+		};
 
-		void Present();
+		class MasterRenderer
+		{
+		public:
+			void Clear(Colour colour);
+
+			void QueueMesh(Mesh* mesh, Transform transform, ShaderManager* shaderManager);
+
+			void Render3D();
+
+			void Present();
+
+		private:
+			void DrawMesh(Mesh* mesh, Transform transform, ShaderManager* shaderManager);
+
+			void MainRenderPass();
+		private:
+			std::vector<MeshDrawData> m_DrawQueue;
+		};
 
 	}
 
-	Mesh LoadMesh(std::filesystem::path filePath, Image2D texture, Renderer::ShaderManager* shaderManager);
+	Mesh LoadMesh(std::filesystem::path filePath, Image2D* texture, Renderer::ShaderManager* shaderManager);
 
 }

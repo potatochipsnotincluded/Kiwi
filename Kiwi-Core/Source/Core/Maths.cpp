@@ -239,6 +239,30 @@ namespace Kiwi {
 		return nMin + (val - oMin) * (nMax - nMin) / (oMax - oMin);
 	}
 
+	float Maths::Random(float min, float max)
+	{
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+		std::uniform_real_distribution<float> dist(min, max);
+		return dist(gen);
+	}
+
+	int32_t Maths::Random(int32_t min, int32_t max)
+	{
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+		std::uniform_int_distribution<int32_t> dist(min, max);
+		return dist(gen);
+	}
+
+	uint32_t Maths::Random(uint32_t min, uint32_t max)
+	{
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+		std::uniform_int_distribution<int32_t> dist(min, max);
+		return dist(gen);
+	}
+
 }
 
 

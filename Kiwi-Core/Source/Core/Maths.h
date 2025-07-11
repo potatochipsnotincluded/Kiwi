@@ -2,6 +2,8 @@
 
 #include <raylib.h>
 
+#include <random>
+
 namespace Kiwi {
 
 	struct Vec3
@@ -97,6 +99,12 @@ namespace Kiwi {
 		Colour Mix(Colour a, Colour b, float p);
 
 		float Map(float val, float oMin, float oMax, float nMin, float nMax);
+
+		float Random(float min, float max);
+
+		int32_t Random(int32_t min, int32_t max);
+
+		uint32_t Random(uint32_t min, uint32_t max);
 
 	}
 
