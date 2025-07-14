@@ -3,6 +3,8 @@
 
 #include "../Maths.h"
 
+#include "../Debug.h"
+
 #include <raylib.h>
 #include <raymath.h>
 
@@ -88,6 +90,14 @@ namespace Kiwi {
 			virtual void SetShaderParams(Material material) override;
 		};
 
+		class DepthTextureShader : public ShaderManager
+		{
+		public:
+			DepthTextureShader();
+
+			virtual void SetShaderParams(Material material) override;
+		};
+
 		struct MeshDrawData
 		{
 			Mesh* mesh;
@@ -98,20 +108,30 @@ namespace Kiwi {
 		class MasterRenderer
 		{
 		public:
+			MasterRenderer();
+			
 			void Clear(Colour colour);
 
 			void QueueMesh(Mesh* mesh, Transform transform, ShaderManager* shaderManager);
 
 			void Render3D();
 
-			void Present();
-
 		private:
 			void DrawMesh(Mesh* mesh, Transform transform, ShaderManager* shaderManager);
+
+			void ShadowRenderPass();
 
 			void MainRenderPass();
 		private:
 			std::vector<MeshDrawData> m_DrawQueue;
+
+			DepthTextureShader m_DepthShader;
+
+			RenderTexture2D m_DepthTexture;
+
+			RenderTexture2D m_MainTexture;
+
+			Colour m_ClearColour;
 		};
 
 	}
