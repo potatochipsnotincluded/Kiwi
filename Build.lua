@@ -12,6 +12,10 @@ workspace "Kiwi"
 
 OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
+group "Vendor"
+   include "Vendor/Glad/Build-Glad.lua"
+group ""
+
 group "Core"
    include "Kiwi-Core/Build-KiwiCore.lua"
 group ""
