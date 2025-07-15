@@ -2,9 +2,9 @@
 
 #include <Application/Application.h>
 
-Kiwi::Application* CreateApplication()
+Ref<Kiwi::Application> CreateApplication()
 {
-	return new SandboxApplication();
+	return Ref<Kiwi::Application>(new SandboxApplication());
 }
 
 #include <Application/EntryPoint.h>

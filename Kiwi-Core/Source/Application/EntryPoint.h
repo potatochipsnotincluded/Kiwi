@@ -3,13 +3,9 @@
 
 void RunApplication()
 {
-	Kiwi::Application* application = CreateApplication();
+	Ref<Kiwi::Application> application = CreateApplication();
 
-	bool shouldRestart = !application->Run();
-
-	delete application;
-
-	if (shouldRestart)
+	if (!application->Run())
 	{
 		RunApplication();
 	}
