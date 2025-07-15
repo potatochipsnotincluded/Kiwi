@@ -4,6 +4,8 @@
 #include "Debug.h"
 
 #include <glm/glm.hpp>
+
+#include <glad/glad.h> // TODO: Make this renderer-dependent
 #include <GLFW/glfw3.h>
 
 namespace Kiwi {
@@ -22,6 +24,10 @@ namespace Kiwi {
 		void BecomeCurrent();
 
 		GLFWwindow* GetGLFWWindow();
+
+		uint32_t GetWidth();
+
+		uint32_t GetHeight();
 
 	private:
 		GLFWwindow* m_Window = nullptr;

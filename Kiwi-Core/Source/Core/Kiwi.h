@@ -9,3 +9,4 @@
 #include "Debug.h"
 
 #include "Window.h"
+#include "MasterRenderer.h"

@@ -50,6 +50,22 @@ namespace Kiwi {
 		return m_Window;
 	}
 
+	uint32_t Window::GetWidth()
+	{
+		int width;
+		glfwGetWindowSize(m_Window, &width, NULL);
+
+		return width;
+	}
+
+	uint32_t Window::GetHeight()
+	{
+		int height;
+		glfwGetWindowSize(m_Window, &height, NULL);
+
+		return height;
+	}
+
 	bool Input::IsKeyPressed(uint32_t key)
 	{
 		return glfwGetKey(g_CurrentWindow->GetGLFWWindow(), key) == GLFW_PRESS;
