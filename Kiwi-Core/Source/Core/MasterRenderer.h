@@ -1,6 +1,8 @@
 #pragma once
 #include "Common.h"
 
+#include "Pointers.h"
+
 #include <glm/glm.hpp>
 
 namespace Kiwi {
@@ -21,6 +23,6 @@ namespace Kiwi {
 		virtual void Clear(glm::vec4 colour) = 0;
 	};
 
-	Renderer* CreateRenderer(RendererType rendererType);
+	Ref<Renderer> CreateRenderer(RendererType rendererType);
 
 }

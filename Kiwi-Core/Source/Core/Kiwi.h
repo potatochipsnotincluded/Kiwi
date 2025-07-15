@@ -8,5 +8,7 @@
 #include "Common.h"
 #include "Debug.h"
 
+#include "Pointers.h"
+
 #include "Window.h"
 #include "MasterRenderer.h"

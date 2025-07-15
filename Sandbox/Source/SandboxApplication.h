@@ -15,5 +15,5 @@ public:
 private:
 	Kiwi::Window m_Window;
 
-	Kiwi::Renderer* m_Renderer;
+	Ref<Kiwi::Renderer> m_Renderer;
 };

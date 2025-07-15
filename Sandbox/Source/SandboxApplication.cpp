@@ -3,10 +3,7 @@
 SandboxApplication::SandboxApplication() :
 	m_Window("Sandbox", 1260, 720), m_Renderer(Kiwi::CreateRenderer(Kiwi::RendererType::OpenGL)) {}
 
-SandboxApplication::~SandboxApplication()
-{
-	delete m_Renderer;
-}
+SandboxApplication::~SandboxApplication() {}
 
 bool SandboxApplication::Run()
 {
