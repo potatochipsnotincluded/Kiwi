@@ -4,7 +4,7 @@ project "Kiwi-Core"
    cppdialect "C++20"
    staticruntime "off"
 
-   files { "Source/**.h", "Source/**.cpp" }
+   files { "Source/**.h", "Source/**.cpp", "Source/**.inl" }
    
    includedirs
    {

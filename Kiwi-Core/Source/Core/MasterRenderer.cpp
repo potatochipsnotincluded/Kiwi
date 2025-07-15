@@ -7,7 +7,7 @@ namespace Kiwi {
 	Ref<Kiwi::Renderer> CreateRenderer(RendererType rendererType)
 	{
 		if (rendererType == RendererType::OpenGL)
-			return Ref<Kiwi::Renderer>(new OpenGLRenderer());
+			return MakeRef<Kiwi::OpenGLRenderer>();
 		else if (rendererType == RendererType::None)
 			return nullptr;
 		else

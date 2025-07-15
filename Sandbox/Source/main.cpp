@@ -4,7 +4,7 @@
 
 Ref<Kiwi::Application> CreateApplication()
 {
-	return Ref<Kiwi::Application>(new SandboxApplication());
+	return MakeRef<SandboxApplication>();
 }
 
 #include <Application/EntryPoint.h>

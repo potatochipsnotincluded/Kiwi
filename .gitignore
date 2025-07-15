@@ -1,7 +1,6 @@
 # Directories
 .vs/
 Binaries/
-
 # Files
 *.vcxproj
 *.vcxproj.user
@@ -54,4 +53,4 @@ Thumbs.db
 *.swo
 
 # Exclude
-!Vendor/Binaries
+!Vendor/Binaries/Premake
