@@ -1,9 +1,9 @@
 namespace Kiwi {
 
-	template<typename T>
-	Ref<T> MakeRef()
+	template <typename T, typename... Args>
+	Ref<T> MakeRef(Args&&... args)
 	{
-		return std::make_shared<T>();
+		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 
 }

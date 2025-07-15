@@ -24,3 +24,5 @@
 #include <type_traits>
 #include <filesystem>
 #include <mutex>
+
+inline constexpr uint32_t null = 0;
