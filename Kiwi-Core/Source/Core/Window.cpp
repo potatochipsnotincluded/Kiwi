@@ -1,0 +1,77 @@
+#include "Window.h"
+
+namespace Kiwi {
+
+	Window::Window(std::string_view title, uint32_t width, uint32_t height)
+	{
+		if (!glfwInit())
+			KW_ASSERT(false);
+
+		m_Window = glfwCreateWindow(width, height, title.data(), NULL, NULL);
+
+		if (!m_Window)
+		{
+			glfwTerminate();
+			KW_ASSERT(false);
+		}
+
+		glfwMakeContextCurrent(m_Window);
+
+		BecomeCurrent();
+		
+		// (GLFW Documentation, 2025)
+	}
+
+	Window::~Window()
+	{
+		glfwTerminate();
+	}
+
+	bool Window::ShouldClose()
+	{
+		return glfwWindowShouldClose(m_Window);
+	}
+
+	void Window::Present()
+	{
+		glfwSwapBuffers(m_Window);
+		glfwPollEvents();
+
+		// (GLFW Documentation, 2025)
+	}
+
+	void Window::BecomeCurrent()
+	{
+		g_CurrentWindow = this;
+	}
+
+	GLFWwindow* Window::GetGLFWWindow()
+	{
+		return m_Window;
+	}
+
+	bool Input::IsKeyPressed(uint32_t key)
+	{
+		return glfwGetKey(g_CurrentWindow->GetGLFWWindow(), key) == GLFW_PRESS;
+	}
+
+	bool Input::IsMouseButtonPressed(uint32_t button)
+	{
+		return glfwGetMouseButton(g_CurrentWindow->GetGLFWWindow(), button) == GLFW_PRESS;
+	}
+
+	glm::vec2 Input::GetMousePosition()
+	{
+		double x;
+		double y;
+
+		glfwGetCursorPos(g_CurrentWindow->GetGLFWWindow(), &x, &y);
+
+		return glm::vec2(x, y);
+	}
+
+
+}
+
+// References
+// GLFW Documentation, Retrieved 2025, https://www.glfw.org/documentation.html

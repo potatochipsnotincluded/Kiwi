@@ -10,7 +10,8 @@ project "Kiwi-Core"
    {
       "Source",
 	  "../Vendor/GLFW/include",
-	  "../Vendor/Glad/include"
+	  "../Vendor/Glad/include",
+	  "../Vendor/glm/include"
    }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")

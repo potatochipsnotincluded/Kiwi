@@ -11,4 +11,7 @@ public:
 	virtual ~SandboxApplication() override;
 
 	virtual bool Run() override;
+
+private:
+	Kiwi::Window m_Window;
 };
