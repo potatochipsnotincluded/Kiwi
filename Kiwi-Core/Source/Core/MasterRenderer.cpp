@@ -61,6 +61,13 @@ namespace Kiwi {
 		}
 	}
 
+	void Renderer::PushMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, const Transform& transform)
+	{
+		DrawCallData data = DrawCallData(mesh, shaderProgramme, transform);
+
+		m_DrawQueue.push_back(data);
+	}
+
 	Ref<Kiwi::Renderer> CreateRenderer(RendererType rendererType)
 	{
 		g_RendererType = rendererType;

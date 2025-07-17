@@ -55,13 +55,15 @@ bool SandboxApplication::Run()
 #endif
 		m_Renderer->Clear(glm::vec4(1.00f, 0.00f, 0.45f, 1.00f));
 #ifndef PERF_TEST
-		m_Renderer->RenderMesh(mesh, shaderProgramme, transform);
+		m_Renderer->PushMesh(mesh, shaderProgramme, transform);
 #else
 		for (int i = 0; i < triangles.size(); i++)
 		{
-			m_Renderer->RenderMesh(mesh, shaderProgramme, triangles[i]);
+			m_Renderer->PushMesh(mesh, shaderProgramme, triangles[i]);
 		}
 #endif
+		m_Renderer->Render();
+
 		m_Window.Present();
 	}
 

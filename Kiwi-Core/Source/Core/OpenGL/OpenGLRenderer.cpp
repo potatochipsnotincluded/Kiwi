@@ -20,6 +20,19 @@ namespace Kiwi {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
+	void OpenGLRenderer::Render()
+	{
+		MainRenderPass();
+	}
+
+	void OpenGLRenderer::MainRenderPass()
+	{
+		for (DrawCallData data : m_DrawQueue)
+		{
+			RenderMesh(data.mesh, data.shaderProgramme, data.transform);
+		}
+	}
+
 	void OpenGLRenderer::RenderMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, Transform transform)
 	{
 		shaderProgramme->Start();

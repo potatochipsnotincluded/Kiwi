@@ -117,6 +117,13 @@ namespace Kiwi {
 		virtual void AddUniform(std::string_view uniformName, UniformType uniformType, void* value) = 0;
 	};
 
+	struct DrawCallData
+	{
+		Ref<Mesh> mesh;
+		Ref<ShaderProgramme> shaderProgramme;
+		const Transform& transform;
+	};
+
 	class Renderer
 	{
 	public:
@@ -124,7 +131,12 @@ namespace Kiwi {
 
 		virtual void Clear(glm::vec4 colour) = 0;
 
-		virtual void RenderMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, Transform transform) = 0;
+		virtual void Render() = 0;
+
+		void PushMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, const Transform& transform);
+
+	protected:
+		std::vector<DrawCallData> m_DrawQueue;
 	};
 
 	Ref<Renderer> CreateRenderer(RendererType rendererType);

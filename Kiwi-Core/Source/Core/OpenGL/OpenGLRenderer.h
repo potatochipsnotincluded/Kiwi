@@ -65,7 +65,12 @@ namespace Kiwi {
 
 		virtual void Clear(glm::vec4 colour) override;
 
-		virtual void RenderMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, Transform transform) override;
+		virtual void Render() override;
+
+	private:
+		void MainRenderPass();
+
+		void RenderMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, Transform transform);
 	};
 
 }
