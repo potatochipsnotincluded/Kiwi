@@ -5,14 +5,14 @@ namespace Kiwi {
 	Window::Window(std::string_view title, uint32_t width, uint32_t height)
 	{
 		if (!glfwInit())
-			KW_ASSERT(false);
+			KW_ASSERT("Could not initialise GLFW", false);
 
 		m_Window = glfwCreateWindow(width, height, title.data(), NULL, NULL);
 
 		if (!m_Window)
 		{
 			glfwTerminate();
-			KW_ASSERT(false);
+			KW_ASSERT("Could not create GLFW window", false);
 		}
 
 		glfwMakeContextCurrent(m_Window);
@@ -32,10 +32,19 @@ namespace Kiwi {
 		return glfwWindowShouldClose(m_Window);
 	}
 
+	void Window::FrameBegin()
+	{
+		m_StartTime = glfwGetTime();
+	}
+
 	void Window::Present()
 	{
 		glfwSwapBuffers(m_Window);
 		glfwPollEvents();
+
+		m_EndTime = glfwGetTime();
+
+		m_Delta = m_EndTime - m_StartTime;
 
 		// (GLFW Documentation, 2025)
 	}
@@ -61,9 +70,14 @@ namespace Kiwi {
 	uint32_t Window::GetHeight()
 	{
 		int height;
-		glfwGetWindowSize(m_Window, &height, NULL);
+		glfwGetWindowSize(m_Window, NULL, &height);
 
 		return height;
+	}
+
+	double Window::GetDeltaTime()
+	{
+		return m_Delta;
 	}
 
 	bool Input::IsKeyPressed(uint32_t key)

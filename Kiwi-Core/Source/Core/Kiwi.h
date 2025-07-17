@@ -8,7 +8,8 @@
 #include "Common.h"
 #include "Debug.h"
 
-#include "Pointers.h"
+#include "Maths.h"
+#include "FileUtils.h"
 
 #include "Window.h"
 #include "MasterRenderer.h"

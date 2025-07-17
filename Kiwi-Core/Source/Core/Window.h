@@ -19,6 +19,8 @@ namespace Kiwi {
 	public:
 		bool ShouldClose();
 
+		void FrameBegin();
+
 		void Present();
 
 		void BecomeCurrent();
@@ -29,8 +31,14 @@ namespace Kiwi {
 
 		uint32_t GetHeight();
 
+		double GetDeltaTime();
+
 	private:
 		GLFWwindow* m_Window = nullptr;
+
+		double m_Delta = 0;
+		double m_StartTime = 0;
+		double m_EndTime = 0;
 	};
 
 	inline Window* g_CurrentWindow;

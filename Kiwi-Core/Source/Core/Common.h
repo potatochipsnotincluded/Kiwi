@@ -25,4 +25,6 @@
 #include <filesystem>
 #include <mutex>
 
+#include "Pointers.h"
+
 inline constexpr uint32_t null = 0;

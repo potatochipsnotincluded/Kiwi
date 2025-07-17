@@ -5,7 +5,13 @@
 
 #include "../Window.h"
 
+#include "../FileUtils.h"
+
+#include "../Debug.h"
+
 #include <glad/glad.h>
+
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Kiwi {
 
@@ -30,6 +36,26 @@ namespace Kiwi {
 		int32_t m_IndicesCount = null;
 	};
 
+	class OpenGLShaderProgramme : public ShaderProgramme
+	{
+	public:
+		OpenGLShaderProgramme(ShaderProgrammeCreateArgs shaderProgrammeCreateArgs);
+
+		virtual ~OpenGLShaderProgramme() override;
+
+		virtual void Start() override;
+		
+		virtual void Stop() override;
+
+		virtual void AddUniform(std::string_view uniformName, UniformType uniformType, void* value) override;
+
+	private:
+		uint32_t CompileShader(GLenum shaderType, const std::string& source);
+
+	private:
+		uint32_t m_ShaderProgramme = null;
+	};
+
 	class OpenGLRenderer : public Renderer
 	{
 	public:
@@ -39,7 +65,7 @@ namespace Kiwi {
 
 		virtual void Clear(glm::vec4 colour) override;
 
-		virtual void RenderMesh(Ref<Mesh> mesh) override;
+		virtual void RenderMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, Transform transform) override;
 	};
 
 }
