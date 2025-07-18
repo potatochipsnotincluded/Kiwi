@@ -77,6 +77,7 @@ namespace Kiwi {
 		Mat2,
 		Mat3,
 		Mat4,
+		Texture
 	};
 
 	enum class RendererType
@@ -117,11 +118,27 @@ namespace Kiwi {
 		virtual void AddUniform(std::string_view uniformName, UniformType uniformType, void* value) = 0;
 	};
 
+	class Texture
+	{
+	public:
+		virtual ~Texture() = default;
+
+		virtual void Bind() = 0;
+
+		virtual void Unbind() = 0;
+	};
+
+	struct Material
+	{
+		Ref<Texture> albedoMap;
+	};
+
 	struct DrawCallData
 	{
 		Ref<Mesh> mesh;
 		Ref<ShaderProgramme> shaderProgramme;
 		const Transform& transform;
+		Material material;
 	};
 
 	class Renderer
@@ -133,7 +150,7 @@ namespace Kiwi {
 
 		virtual void Render() = 0;
 
-		void PushMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, const Transform& transform);
+		void PushMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, const Transform& transform, Material material);
 
 	protected:
 		std::vector<DrawCallData> m_DrawQueue;
@@ -141,7 +158,9 @@ namespace Kiwi {
 
 	Ref<Renderer> CreateRenderer(RendererType rendererType);
 
-	Ref<Mesh> CreateMesh(std::vector<float> vertices, std::vector<uint32_t> indices);
+	Ref<Mesh> CreateMesh(std::vector<float> vertices, std::vector<float> texCoords, std::vector<uint32_t> indices);
+
+	Ref<Texture> LoadTexture(std::filesystem::path filePath, bool linear);
 
 	Ref<ShaderProgramme> CreateShaderProgramme(ShaderProgrammeCreateArgs shaderProgrammeCreateArgs);
 

@@ -4,18 +4,17 @@
 
 namespace Kiwi {
 
-
 	glm::mat4 CreateModelMatrix(const Transform& transform)
 	{
 		glm::mat4 model = glm::mat4(1.0f);
 
-		model = glm::translate(model, transform.position);
-
-		model = glm::rotate(model, glm::radians(transform.rotation.x), glm::vec3(1, 0, 0)); // Pitch
-		model = glm::rotate(model, glm::radians(transform.rotation.y), glm::vec3(0, 1, 0)); // Yaw
-		model = glm::rotate(model, glm::radians(transform.rotation.z), glm::vec3(0, 0, 1)); // Roll
-
 		model = glm::scale(model, transform.scale);
+
+		model = glm::rotate(model, glm::radians(transform.rotation.z), glm::vec3(0, 0, 1)); // Roll
+		model = glm::rotate(model, glm::radians(transform.rotation.y), glm::vec3(0, 1, 0)); // Yaw
+		model = glm::rotate(model, glm::radians(transform.rotation.x), glm::vec3(1, 0, 0)); // Pitch
+
+		model = glm::translate(model, transform.position);
 
 		return model;
 	}
@@ -61,9 +60,9 @@ namespace Kiwi {
 		}
 	}
 
-	void Renderer::PushMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, const Transform& transform)
+	void Renderer::PushMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, const Transform& transform, Material material)
 	{
-		DrawCallData data = DrawCallData(mesh, shaderProgramme, transform);
+		DrawCallData data = DrawCallData(mesh, shaderProgramme, transform, material);
 
 		m_DrawQueue.push_back(data);
 	}
@@ -80,10 +79,20 @@ namespace Kiwi {
 			return nullptr;
 	}
 
-	Ref<Mesh> CreateMesh(std::vector<float> vertices, std::vector<uint32_t> indices)
+	Ref<Mesh> CreateMesh(std::vector<float> vertices, std::vector<float> texCoords, std::vector<uint32_t> indices)
 	{
 		if (g_RendererType == RendererType::OpenGL)
-			return MakeRef<OpenGLMesh>(vertices, indices);
+			return MakeRef<OpenGLMesh>(vertices, texCoords, indices);
+		else if (g_RendererType == RendererType::None)
+			return nullptr;
+		else
+			return nullptr;
+	}
+
+	Ref<Texture> LoadTexture(std::filesystem::path filePath, bool linear)
+	{
+		if (g_RendererType == RendererType::OpenGL)
+			return MakeRef<OpenGLTexture>(filePath, linear);
 		else if (g_RendererType == RendererType::None)
 			return nullptr;
 		else

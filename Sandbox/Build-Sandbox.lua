@@ -14,7 +14,9 @@ project "Sandbox"
       "../Kiwi-Core/Source",
       "../Vendor/GLFW/include",
       "../Vendor/Glad/include",
-	  "../Vendor/glm/include"
+	  "../Vendor/glm/include",
+	 "../Vendor/Assimp/include",
+	 "../Vendor/stb_image"
    }
 
    links { "Kiwi-Core" }

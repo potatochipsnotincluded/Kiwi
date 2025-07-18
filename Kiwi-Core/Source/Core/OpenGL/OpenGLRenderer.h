@@ -18,7 +18,7 @@ namespace Kiwi {
 	class OpenGLMesh : public Mesh
 	{
 	public:
-		OpenGLMesh(std::vector<float> vertices, std::vector<uint32_t> indices);
+		OpenGLMesh(std::vector<float> vertices, std::vector<float> texCoords, std::vector<uint32_t> indices);
 
 		virtual ~OpenGLMesh() override;
 
@@ -32,6 +32,9 @@ namespace Kiwi {
 		uint32_t m_VBO = null;
 		uint32_t m_EBO = null;
 		uint32_t m_VAO = null;
+
+		// Texture Coordinates VBO
+		uint32_t m_TBO = null;
 
 		int32_t m_IndicesCount = null;
 	};
@@ -56,6 +59,20 @@ namespace Kiwi {
 		uint32_t m_ShaderProgramme = null;
 	};
 
+	class OpenGLTexture : public Texture
+	{
+	public:
+		OpenGLTexture(std::filesystem::path filePath, bool linear);
+
+		virtual ~OpenGLTexture() override;
+
+		virtual void Bind() override;
+
+		virtual void Unbind() override;
+	private:
+		uint32_t m_ID = null;
+	};
+
 	class OpenGLRenderer : public Renderer
 	{
 	public:
@@ -70,7 +87,7 @@ namespace Kiwi {
 	private:
 		void MainRenderPass();
 
-		void RenderMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, Transform transform);
+		void RenderMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, Transform transform, Material material);
 	};
 
 }

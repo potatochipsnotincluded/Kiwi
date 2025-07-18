@@ -1,5 +1,8 @@
 #include "OpenGLRenderer.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 namespace Kiwi {
 
 	OpenGLRenderer::OpenGLRenderer()
@@ -29,15 +32,17 @@ namespace Kiwi {
 	{
 		for (DrawCallData data : m_DrawQueue)
 		{
-			RenderMesh(data.mesh, data.shaderProgramme, data.transform);
+			RenderMesh(data.mesh, data.shaderProgramme, data.transform, data.material);
 		}
 	}
 
-	void OpenGLRenderer::RenderMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, Transform transform)
+	void OpenGLRenderer::RenderMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, Transform transform, Material material)
 	{
 		shaderProgramme->Start();
 
 		mesh->Bind();
+
+		material.albedoMap->Bind();
 
 		int width = g_CurrentWindow->GetWidth();
 		int height = g_CurrentWindow->GetHeight();
@@ -50,19 +55,25 @@ namespace Kiwi {
 		shaderProgramme->AddUniform("u_View", UniformType::Mat4, &viewMatrix);
 		shaderProgramme->AddUniform("u_Projection", UniformType::Mat4, &projectionMatrix);
 
+		int32_t textureIndex = 0;
+		shaderProgramme->AddUniform("u_AlbedoMap", UniformType::Texture, &textureIndex);
+
 		glDrawElements(GL_TRIANGLES, mesh->GetIndicesCount(), GL_UNSIGNED_INT, (void*)0);
+
+		material.albedoMap->Unbind();
 
 		mesh->Unbind();
 
 		shaderProgramme->Stop();
 	}
 
-	OpenGLMesh::OpenGLMesh(std::vector<float> vertices, std::vector<uint32_t> indices)
+	OpenGLMesh::OpenGLMesh(std::vector<float> vertices, std::vector<float> texCoords, std::vector<uint32_t> indices)
 	{
 		m_IndicesCount = indices.size();
 
 		glGenVertexArrays(1, &m_VAO);
 		glGenBuffers(1, &m_VBO);
+		glGenBuffers(1, &m_TBO);
 		glGenBuffers(1, &m_EBO);
 
 		glBindVertexArray(m_VAO);
@@ -72,6 +83,12 @@ namespace Kiwi {
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_TBO);
+		glBufferData(GL_ARRAY_BUFFER, texCoords.size() * sizeof(float), texCoords.data(), GL_STATIC_DRAW);
+
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
@@ -151,7 +168,6 @@ namespace Kiwi {
 		glUseProgram(null);
 	}
 
-
 	void OpenGLShaderProgramme::AddUniform(std::string_view uniformName, UniformType uniformType, void* value)
 	{
 		GLint location = glGetUniformLocation(m_ShaderProgramme, uniformName.data());
@@ -202,6 +218,10 @@ namespace Kiwi {
 				glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(*static_cast<glm::mat4*>(value)));
 				break;
 
+			case UniformType::Texture:
+				glUniform1i(location, *static_cast<int32_t*>(value));
+				break;
+
 			default:
 				break;
 		}
@@ -233,6 +253,55 @@ namespace Kiwi {
 		}
 
 		return shader;
+	}
+
+	OpenGLTexture::OpenGLTexture(std::filesystem::path filePath, bool linear)
+	{
+		int width, height, channels;
+
+		unsigned char* data = stbi_load(filePath.string().c_str(), &width, &height, &channels, STBI_rgb_alpha);
+		KW_ASSERT("Failed to load texture.", data);
+
+		glGenTextures(1, &m_ID);
+		glBindTexture(GL_TEXTURE_2D, m_ID);
+
+		glTexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGBA8,
+			width, height, 0,
+			GL_RGBA, GL_UNSIGNED_BYTE, data
+		);
+
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		if (!linear)
+		{
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}
+		else
+		{
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		}
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glBindTexture(GL_TEXTURE_2D, null);
+		stbi_image_free(data);
+	}
+
+	OpenGLTexture::~OpenGLTexture() {}
+
+	void OpenGLTexture::Bind()
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_ID);
+	}
+
+	void OpenGLTexture::Unbind()
+	{
+		glBindTexture(GL_TEXTURE_2D, null);
 	}
 
 }

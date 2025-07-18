@@ -11,7 +11,9 @@ project "Kiwi-Core"
       "Source",
 	  "../Vendor/GLFW/include",
 	  "../Vendor/Glad/include",
-	  "../Vendor/glm/include"
+	  "../Vendor/glm/include",
+	  "../Vendor/Assimp/include",
+	  	"../Vendor/stb_image"
    }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
@@ -28,6 +30,7 @@ project "Kiwi-Core"
       {
 	     "../Vendor/GLFW/glfw3.lib",
 		 "../Vendor/GLFW/glfw3_mt.lib",
+		 "../Vendor/Assimp/lib/assimp-vc143-mt.lib",
          "shlwapi.lib",
          "user32.lib",
          "gdi32.lib",

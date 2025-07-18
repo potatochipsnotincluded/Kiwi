@@ -2,7 +2,11 @@
 
 out vec4 FragColor;
 
+uniform sampler2D u_AlbedoMap;
+
+in vec2 v_TexCoord;
+
 void main()
 {
-    FragColor = vec4(0, 0.54, 1, 1.0);
+    FragColor = texture(u_AlbedoMap, vec2(v_TexCoord.x, 1.0 - v_TexCoord.y));
 }
