@@ -79,10 +79,10 @@ namespace Kiwi {
 			return nullptr;
 	}
 
-	Ref<Mesh> CreateMesh(std::vector<float> vertices, std::vector<float> texCoords, std::vector<uint32_t> indices)
+	Ref<Mesh> CreateMesh(std::vector<float> vertices, std::vector<float> texCoords, std::vector<float> normals, std::vector<uint32_t> indices)
 	{
 		if (g_RendererType == RendererType::OpenGL)
-			return MakeRef<OpenGLMesh>(vertices, texCoords, indices);
+			return MakeRef<OpenGLMesh>(vertices, texCoords, normals, indices);
 		else if (g_RendererType == RendererType::None)
 			return nullptr;
 		else

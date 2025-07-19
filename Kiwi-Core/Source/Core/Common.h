@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <print>
+#include <format>
 #include <cstdlib>
 #include <cstdint>
 #include <string>

@@ -18,6 +18,8 @@ namespace Kiwi {
 		glfwMakeContextCurrent(m_Window);
 
 		BecomeCurrent();
+
+		glfwSwapInterval(0);
 		
 		// (GLFW Documentation, 2025)
 	}

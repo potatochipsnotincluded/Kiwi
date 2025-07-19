@@ -52,7 +52,29 @@ namespace Kiwi {
 		}
 	};
 
+	struct SunLight
+	{
+		glm::vec3 sunPosition;
+		glm::vec3 sunColour;
+
+		float intensity;
+
+		float ambient;
+
+		SunLight()
+		{
+			sunPosition = glm::vec3(0, 10, 10);
+			sunColour = glm::vec3(1.0f, 1.0f, 1.0f);
+
+			intensity = 10;
+
+			ambient = 0.2f;
+		}
+	};
+
 	inline Ref<Camera> g_MainCamera = MakeRef<Camera>();
+
+	inline Ref<SunLight> g_SunLight = MakeRef<SunLight>();
 
 	glm::mat4 CreateModelMatrix(const Transform& transform);
 
@@ -131,6 +153,9 @@ namespace Kiwi {
 	struct Material
 	{
 		Ref<Texture> albedoMap;
+
+		float metallic;
+		float roughness;
 	};
 
 	struct DrawCallData
@@ -158,7 +183,7 @@ namespace Kiwi {
 
 	Ref<Renderer> CreateRenderer(RendererType rendererType);
 
-	Ref<Mesh> CreateMesh(std::vector<float> vertices, std::vector<float> texCoords, std::vector<uint32_t> indices);
+	Ref<Mesh> CreateMesh(std::vector<float> vertices, std::vector<float> texCoords, std::vector<float> normals, std::vector<uint32_t> indices);
 
 	Ref<Texture> LoadTexture(std::filesystem::path filePath, bool linear);
 

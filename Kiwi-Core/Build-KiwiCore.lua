@@ -1,7 +1,7 @@
 project "Kiwi-Core"
    kind "StaticLib"
    language "C++"
-   cppdialect "C++20"
+   cppdialect "C++23"
    staticruntime "off"
 
    files { "Source/**.h", "Source/**.cpp", "Source/**.inl" }

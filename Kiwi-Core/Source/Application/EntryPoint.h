@@ -17,7 +17,7 @@ void RunApplication()
 
 int main(int argc, char* argv[])
 {
-	KW_LOG("Kiwi version " << KIWI_VERSION_MAJOR << "." << KIWI_VERSION_MINOR << " initialising.");
+	KW_LOG("Kiwi version {}.{}", KIWI_VERSION_MAJOR, KIWI_VERSION_MINOR);
 
 #ifdef EXPERIMENTAL_BUILD
 	KW_LOG("This is an experimental build of Kiwi. It may be unstable.");

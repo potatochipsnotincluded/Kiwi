@@ -26,6 +26,8 @@ namespace Kiwi {
 	void OpenGLRenderer::Render()
 	{
 		MainRenderPass();
+
+		m_DrawQueue.clear();
 	}
 
 	void OpenGLRenderer::MainRenderPass()
@@ -44,6 +46,14 @@ namespace Kiwi {
 
 		material.albedoMap->Bind();
 
+		glm::vec3 sunPos = g_SunLight->sunPosition;
+		glm::vec3 sunCol = g_SunLight->sunColour * g_SunLight->intensity;
+		float sunAmb = g_SunLight->ambient;
+
+		shaderProgramme->AddUniform("u_SunPosition", UniformType::Vec3, &sunPos);
+		shaderProgramme->AddUniform("u_SunColour", UniformType::Vec3, &sunCol);
+		shaderProgramme->AddUniform("u_Ambient", UniformType::Float, &sunAmb);
+
 		int width = g_CurrentWindow->GetWidth();
 		int height = g_CurrentWindow->GetHeight();
 
@@ -54,6 +64,12 @@ namespace Kiwi {
 		shaderProgramme->AddUniform("u_Model", UniformType::Mat4, &modelMatrix);
 		shaderProgramme->AddUniform("u_View", UniformType::Mat4, &viewMatrix);
 		shaderProgramme->AddUniform("u_Projection", UniformType::Mat4, &projectionMatrix);
+
+		float metallic = material.metallic;
+		float roughness = material.roughness;
+
+		shaderProgramme->AddUniform("u_Metallic", UniformType::Float, &metallic);
+		shaderProgramme->AddUniform("u_Roughness", UniformType::Float, &roughness);
 
 		int32_t textureIndex = 0;
 		shaderProgramme->AddUniform("u_AlbedoMap", UniformType::Texture, &textureIndex);
@@ -67,13 +83,14 @@ namespace Kiwi {
 		shaderProgramme->Stop();
 	}
 
-	OpenGLMesh::OpenGLMesh(std::vector<float> vertices, std::vector<float> texCoords, std::vector<uint32_t> indices)
+	OpenGLMesh::OpenGLMesh(std::vector<float> vertices, std::vector<float> texCoords, std::vector<float> normals, std::vector<uint32_t> indices)
 	{
 		m_IndicesCount = indices.size();
 
 		glGenVertexArrays(1, &m_VAO);
 		glGenBuffers(1, &m_VBO);
 		glGenBuffers(1, &m_TBO);
+		glGenBuffers(1, &m_NBO);
 		glGenBuffers(1, &m_EBO);
 
 		glBindVertexArray(m_VAO);
@@ -89,6 +106,12 @@ namespace Kiwi {
 
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(1);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_NBO);
+		glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float), normals.data(), GL_STATIC_DRAW);
+
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(2);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
@@ -139,7 +162,7 @@ namespace Kiwi {
 			std::string errorLog = std::string(maxLength, ' ');
 			glGetProgramInfoLog(m_ShaderProgramme, maxLength, &maxLength, &errorLog[0]);
 
-			KW_LOG(errorLog);
+			KW_LOG("OpenGL error: {}", errorLog);
 			KW_ASSERT("Shader linking failed. ", false);
 
 			glDeleteProgram(m_ShaderProgramme);
@@ -244,7 +267,7 @@ namespace Kiwi {
 			std::string errorLog = std::string(maxLength, ' ');
 			glGetShaderInfoLog(shader, maxLength, &maxLength, &errorLog[0]);
 
-			KW_LOG(errorLog);
+			KW_LOG("OpenGL error: {}", errorLog);
 			KW_ASSERT("Shader compilation failed", false);
 
 			glDeleteShader(shader);
@@ -259,6 +282,7 @@ namespace Kiwi {
 	{
 		int width, height, channels;
 
+		stbi_set_flip_vertically_on_load(true);
 		unsigned char* data = stbi_load(filePath.string().c_str(), &width, &height, &channels, STBI_rgb_alpha);
 		KW_ASSERT("Failed to load texture.", data);
 

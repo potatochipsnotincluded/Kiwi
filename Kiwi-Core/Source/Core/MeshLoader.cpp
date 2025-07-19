@@ -72,7 +72,7 @@ namespace Kiwi {
             indexOffset += mesh->mNumVertices;
         }
 
-        return CreateMesh(positions, texcoords, indices);
+        return CreateMesh(positions, texcoords, normals, indices);
     }
 
 }

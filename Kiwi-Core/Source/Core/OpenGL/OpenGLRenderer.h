@@ -18,7 +18,7 @@ namespace Kiwi {
 	class OpenGLMesh : public Mesh
 	{
 	public:
-		OpenGLMesh(std::vector<float> vertices, std::vector<float> texCoords, std::vector<uint32_t> indices);
+		OpenGLMesh(std::vector<float> vertices, std::vector<float> texCoords, std::vector<float> normals, std::vector<uint32_t> indices);
 
 		virtual ~OpenGLMesh() override;
 
@@ -35,6 +35,9 @@ namespace Kiwi {
 
 		// Texture Coordinates VBO
 		uint32_t m_TBO = null;
+
+		// Normals VBO
+		uint32_t m_NBO = null;
 
 		int32_t m_IndicesCount = null;
 	};
