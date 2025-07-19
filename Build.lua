@@ -14,6 +14,7 @@ OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
 group "Vendor"
    include "Vendor/Glad/Build-Glad.lua"
+   include "Vendor/ImGui/Build-ImGui.lua"
 group ""
 
 group "Core"

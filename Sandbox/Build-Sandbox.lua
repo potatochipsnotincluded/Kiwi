@@ -16,6 +16,7 @@ project "Sandbox"
       "../Vendor/Glad/include",
 	  "../Vendor/glm/include",
 	 "../Vendor/Assimp/include",
+	  "../Vendor/ImGui/Source",
 	 "../Vendor/stb_image"
    }
 

@@ -175,6 +175,9 @@ namespace Kiwi {
 
 		virtual void Render() = 0;
 
+		virtual void ImGuiStartFrame() = 0;
+		virtual void ImGuiEndFrame() = 0;
+
 		void PushMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, const Transform& transform, Material material);
 
 	protected:

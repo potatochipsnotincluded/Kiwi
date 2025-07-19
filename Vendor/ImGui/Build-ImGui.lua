@@ -1,49 +1,25 @@
-project "Kiwi-Core"
+project "ImGui"
    kind "StaticLib"
    language "C++"
    cppdialect "C++23"
    staticruntime "off"
 
-   files { "Source/**.h", "Source/**.cpp", "Source/**.inl" }
+   files { "Source/**.cpp", "Source/**.h" }
    
    includedirs
    {
       "Source",
-	  "../Vendor/GLFW/include",
-	  "../Vendor/Glad/include",
-	  "../Vendor/glm/include",
-	  "../Vendor/Assimp/include",
-	  "../Vendor/ImGui/Source",
-	  	"../Vendor/stb_image"
+	  "../GLFW/include"
    }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
-   
-   links
-   {
-      "Glad",
-	  "ImGui"
-   }
-   
+
    filter "system:windows"
       systemversion "latest"
       links
       {
-	     "../Vendor/GLFW/glfw3.lib",
-		 "../Vendor/GLFW/glfw3_mt.lib",
-		 "../Vendor/Assimp/lib/assimp-vc143-mt.lib",
-         "shlwapi.lib",
-         "user32.lib",
-         "gdi32.lib",
-         "shell32.lib",
-         "advapi32.lib",
-         "ws2_32.lib",
-         "winmm.lib",
-         "setupapi.lib",
-         "version.lib",
-         "imm32.lib",
-         "cfgmgr32.lib"
+         "opengl32.lib"
       }
 
    filter "configurations:Debug"

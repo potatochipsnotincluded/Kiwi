@@ -13,6 +13,10 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 namespace Kiwi {
 
 	class OpenGLMesh : public Mesh
@@ -86,6 +90,9 @@ namespace Kiwi {
 		virtual void Clear(glm::vec4 colour) override;
 
 		virtual void Render() override;
+
+		virtual void ImGuiStartFrame() override;
+		virtual void ImGuiEndFrame() override;
 
 	private:
 		void MainRenderPass();

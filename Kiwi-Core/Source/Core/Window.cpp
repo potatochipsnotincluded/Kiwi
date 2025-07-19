@@ -15,8 +15,6 @@ namespace Kiwi {
 			KW_ASSERT("Could not create GLFW window", false);
 		}
 
-		glfwMakeContextCurrent(m_Window);
-
 		BecomeCurrent();
 
 		glfwSwapInterval(0);
@@ -53,6 +51,8 @@ namespace Kiwi {
 
 	void Window::BecomeCurrent()
 	{
+		glfwMakeContextCurrent(m_Window);
+
 		g_CurrentWindow = this;
 	}
 

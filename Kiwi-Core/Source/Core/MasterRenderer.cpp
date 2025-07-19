@@ -43,6 +43,11 @@ namespace Kiwi {
 
 	glm::mat4 CreateProjectionMatrix(const Camera& camera, int viewportWidth, int viewportHeight)
 	{
+		if (viewportWidth < 1 || viewportHeight < 1)
+		{
+			return glm::mat4(1);
+		}
+
 		float aspectRatio = static_cast<float>(viewportWidth) / static_cast<float>(viewportHeight);
 
 		if (camera.perspective)
