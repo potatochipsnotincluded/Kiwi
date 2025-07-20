@@ -82,26 +82,35 @@ namespace Kiwi {
 		return m_Delta;
 	}
 
-	bool Input::IsKeyPressed(uint32_t key)
-	{
-		return glfwGetKey(g_CurrentWindow->GetGLFWWindow(), key) == GLFW_PRESS;
+	namespace Input {
+
+		bool GetKeyDown(ImGuiKey key)
+		{
+			if (!g_Focused)
+				return false;
+			return ImGui::IsKeyDown(key);
+		}
+
+		bool GetKeyPressed(ImGuiKey key)
+		{
+			if (!g_Focused)
+				return false;
+			return ImGui::IsKeyPressed(key);
+		}
+
+		bool GetMouseButtonPressed(ImGuiMouseButton button)
+		{
+			if (!g_Focused)
+				return false;
+			return ImGui::IsMouseClicked(button);
+		}
+
+		glm::vec2 Input::GetMousePosition()
+		{
+			return g_MousePosition;
+		}
+
 	}
-
-	bool Input::IsMouseButtonPressed(uint32_t button)
-	{
-		return glfwGetMouseButton(g_CurrentWindow->GetGLFWWindow(), button) == GLFW_PRESS;
-	}
-
-	glm::vec2 Input::GetMousePosition()
-	{
-		double x;
-		double y;
-
-		glfwGetCursorPos(g_CurrentWindow->GetGLFWWindow(), &x, &y);
-
-		return glm::vec2(x, y);
-	}
-
 
 }
 

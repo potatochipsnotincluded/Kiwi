@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
 
+#include <imgui.h>
+
 namespace Kiwi {
 
 	struct Transform
@@ -177,6 +179,20 @@ namespace Kiwi {
 
 		virtual void ImGuiStartFrame() = 0;
 		virtual void ImGuiEndFrame() = 0;
+
+		virtual void ImGuiShutdown() = 0;
+
+		virtual void DrawImGuiViewport() = 0;
+
+		virtual ImTextureID GetFramebufferImGuiTexture() = 0;
+
+		virtual uint32_t GetFramebufferWidth() = 0;
+		virtual uint32_t GetFramebufferHeight() = 0;
+
+		virtual void SetFramebufferWidth(uint32_t width) = 0;
+		virtual void SetFramebufferHeight(uint32_t height) = 0;
+
+		virtual void UpdateFramebufferSize() = 0;
 
 		void PushMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, const Transform& transform, Material material);
 

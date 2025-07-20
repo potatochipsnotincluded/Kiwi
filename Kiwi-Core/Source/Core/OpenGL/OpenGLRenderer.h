@@ -94,10 +94,34 @@ namespace Kiwi {
 		virtual void ImGuiStartFrame() override;
 		virtual void ImGuiEndFrame() override;
 
+		virtual void ImGuiShutdown() override;
+
+		virtual void DrawImGuiViewport() override;
+
+		virtual ImTextureID GetFramebufferImGuiTexture() override;
+
+		virtual uint32_t GetFramebufferWidth() override;
+		virtual uint32_t GetFramebufferHeight() override;
+
+		virtual void SetFramebufferWidth(uint32_t width) override;
+		virtual void SetFramebufferHeight(uint32_t height) override;
+
+		virtual void UpdateFramebufferSize() override;
+
 	private:
 		void MainRenderPass();
 
 		void RenderMesh(Ref<Mesh> mesh, Ref<ShaderProgramme> shaderProgramme, Transform transform, Material material);
+	
+	private:
+		uint32_t m_Framebuffer = null;
+		uint32_t m_FramebufferTexture = null;
+		uint32_t m_FramebufferDepth = null;
+
+		uint32_t m_FrameWidth = 640;
+		uint32_t m_FrameHeight = 480;
+
+		bool m_Resized = false;
 	};
 
 }

@@ -1,5 +1,7 @@
 #include "OpenGLRenderer.h"
 
+#include "../Window.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
@@ -22,15 +24,39 @@ namespace Kiwi {
 		
 		ImGui_ImplGlfw_InitForOpenGL(g_CurrentWindow->GetGLFWWindow(), true);
 		ImGui_ImplOpenGL3_Init("#version 460");
+
+		glGenFramebuffers(1, &m_Framebuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
+
+		glGenTextures(1, &m_FramebufferTexture);
+		glBindTexture(GL_TEXTURE_2D, m_FramebufferTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_FrameWidth, m_FrameHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FramebufferTexture, 0);
+
+		glGenRenderbuffers(1, &m_FramebufferDepth);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_FramebufferDepth);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_FrameWidth, m_FrameHeight);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_FramebufferDepth);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, null);
 	}
 
 	OpenGLRenderer::~OpenGLRenderer() {}
 
 	void OpenGLRenderer::Clear(glm::vec4 colour)
 	{
-		glViewport(0, 0, g_CurrentWindow->GetWidth(), g_CurrentWindow->GetHeight());
-
 		glEnable(GL_DEPTH_TEST);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffer);
+
+		if (m_Resized)
+		{
+			UpdateFramebufferSize();
+		}
+
+		glViewport(0, 0, m_FrameWidth, m_FrameHeight);
 
 		glClearColor(colour.r, colour.g, colour.b, colour.a);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -41,6 +67,8 @@ namespace Kiwi {
 		MainRenderPass();
 
 		m_DrawQueue.clear();
+
+		glBindFramebuffer(GL_FRAMEBUFFER, null);
 	}
 
 	void OpenGLRenderer::ImGuiStartFrame()
@@ -48,6 +76,9 @@ namespace Kiwi {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+
+		glClearColor(0.035f, 0.035f, 0.035f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void OpenGLRenderer::ImGuiEndFrame()
@@ -55,9 +86,96 @@ namespace Kiwi {
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+#ifdef WINDOWS
 		ImGui::UpdatePlatformWindows();
 		ImGui::RenderPlatformWindowsDefault();
+#endif
 		g_CurrentWindow->BecomeCurrent();
+	}
+
+	void OpenGLRenderer::ImGuiShutdown()
+	{
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+#ifdef WINDOWS
+		ImGui::DestroyPlatformWindows();
+#endif
+	}
+
+	void OpenGLRenderer::DrawImGuiViewport()
+	{
+		static ImVec2 s_PrevSize = ImVec2(0, 0);
+
+		ImGui::Begin("Viewport");
+
+		Input::g_Focused = ImGui::IsWindowFocused();
+
+		float x = ImGui::GetMousePos().x - ImGui::GetCursorScreenPos().x;
+		float y = ImGui::GetMousePos().y - ImGui::GetCursorScreenPos().y;
+		glm::vec2 relativeMousePos = glm::vec2(x, y);
+
+		ImVec2 currentSize = ImGui::GetWindowSize();
+
+		bool resized = (currentSize.x != s_PrevSize.x) || (currentSize.y != s_PrevSize.y);
+		s_PrevSize = currentSize;
+
+		if (resized)
+		{
+			m_FrameWidth = (ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMin().x);
+			m_FrameHeight = (ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y);
+		}
+
+		m_Resized = resized;
+
+		if (Input::g_Focused)
+			Input::g_MousePosition = relativeMousePos;
+
+		ImGui::Image(GetFramebufferImGuiTexture(), ImVec2(m_FrameWidth, m_FrameHeight), ImVec2(0, 0), ImVec2(1, -1));
+
+		ImGui::End();
+	}
+
+	ImTextureID OpenGLRenderer::GetFramebufferImGuiTexture()
+	{
+		return (ImTextureID)(intptr_t)m_FramebufferTexture;
+	}
+
+	uint32_t OpenGLRenderer::GetFramebufferWidth()
+	{
+		return m_FrameWidth;
+	}
+
+	uint32_t OpenGLRenderer::GetFramebufferHeight()
+	{
+		return m_FrameHeight;
+	}
+
+	void OpenGLRenderer::SetFramebufferWidth(uint32_t width)
+	{
+		m_FrameWidth = width;
+	}
+
+	void OpenGLRenderer::SetFramebufferHeight(uint32_t height)
+	{
+		m_FrameHeight = height;
+	}
+
+	void OpenGLRenderer::UpdateFramebufferSize()
+	{
+		//glDeleteTextures(1, &m_FramebufferTexture);
+		//glDeleteTextures(1, &m_FramebufferDepth);
+
+		glGenTextures(1, &m_FramebufferTexture);
+		glBindTexture(GL_TEXTURE_2D, m_FramebufferTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_FrameWidth, m_FrameHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FramebufferTexture, 0);
+
+		glGenRenderbuffers(1, &m_FramebufferDepth);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_FramebufferDepth);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_FrameWidth, m_FrameHeight);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_FramebufferDepth);
 	}
 
 	void OpenGLRenderer::MainRenderPass()
@@ -84,8 +202,8 @@ namespace Kiwi {
 		shaderProgramme->AddUniform("u_SunColour", UniformType::Vec3, &sunCol);
 		shaderProgramme->AddUniform("u_Ambient", UniformType::Float, &sunAmb);
 
-		int width = g_CurrentWindow->GetWidth();
-		int height = g_CurrentWindow->GetHeight();
+		int width = m_FrameWidth;
+		int height = m_FrameHeight;
 
 		glm::mat4 modelMatrix = CreateModelMatrix(transform);
 		glm::mat4 viewMatrix = CreateViewMatrix(*g_MainCamera);
